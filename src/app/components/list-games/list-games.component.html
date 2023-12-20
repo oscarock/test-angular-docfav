@@ -1,0 +1,12 @@
+<div class="row justify-content-center">
+@for (game of games; track game.id){
+    <div class="card col-md-3 m-2 p-0">
+        <img src="{{ game.thumbnail }}" class="card-img-top" alt="{{ game.thumbnail }}">
+        <div class="card-body">
+            <h5 class="card-title">{{ game.title }}</h5>
+            <p class="card-text">{{ game.short_description }}</p>
+            <a href="#{{ game.id }}" class="btn btn-primary">Ver detalles</a>
+        </div>
+    </div>
+}
+</div>
