@@ -12,4 +12,12 @@ export class ApiService {
   getAllGames(){
     return this.httpClient.get(this.url);
   }
+
+  getFilterGenre(genre:string){
+    if(genre){
+      return this.httpClient.get(this.url + "?category=" + genre);
+    }else{
+      return this.httpClient.get(this.url);
+    }
+  }
 }

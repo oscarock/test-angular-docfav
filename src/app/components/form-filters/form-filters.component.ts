@@ -20,6 +20,7 @@ export class FormFiltersComponent {
 
   ngOnInit() {
     this.setupSearchNameChange();
+    this.searchGenre()
   }
 
   filtersForm = new FormGroup({
@@ -46,6 +47,35 @@ export class FormFiltersComponent {
               map(response => this.extractGamesFromResponse(response)),
               map(gamesArray => gamesArray.filter(game =>
                 game.title.toLowerCase().includes(normalizedSearchName)
+              ))
+            );
+          })
+        )
+        .subscribe(filteredGames => {
+          this.games = filteredGames;
+        });
+    }
+  }
+
+  searchGenre() {
+    const searchGenreControl = this.filtersForm.get('searchGenre');
+
+    if (searchGenreControl) {
+      searchGenreControl.valueChanges
+        .pipe(
+          debounceTime(300),
+          distinctUntilChanged(),
+          switchMap(searchGenre => {
+            const normalizedSearchGenre = (searchGenre || '').toLowerCase();
+            console.log(normalizedSearchGenre)
+
+            // Envía el valor del filtro al servicio SearchService
+            this.searchService.changeSearchGenre(normalizedSearchGenre);
+
+            return this.service.getFilterGenre(normalizedSearchGenre).pipe(
+              map(response => this.extractGamesFromResponse(response)),
+              map(gamesArray => gamesArray.filter(game =>
+                game.genre.toLowerCase().includes(normalizedSearchGenre)
               ))
             );
           })

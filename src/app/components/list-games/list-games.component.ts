@@ -35,6 +35,24 @@ export class ListGamesComponent {
         }
       });
     });
+
+    this.searchService.currentSearchGenre.subscribe(searchGenre => {
+      this.service.getFilterGenre(searchGenre)
+      .pipe(
+        map(response => this.extractGamesFromResponse(response))
+      )
+      .subscribe(response => {
+        this.games = response;
+        if (searchGenre) {
+          this.games = response.filter(game =>
+            game.genre.toLowerCase().includes(searchGenre)
+          );
+        } else {
+          // Si searchGenre está vacío, muestra todos los juegos
+          this.games = response;
+        }
+      });
+    });
   }
 
   private extractGamesFromResponse(response: any): any[] {
