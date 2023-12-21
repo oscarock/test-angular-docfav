@@ -21,6 +21,7 @@ export class FormFiltersComponent {
   ngOnInit() {
     this.setupSearchNameChange();
     this.searchGenre()
+    this.searchPlatform()
   }
 
   filtersForm = new FormGroup({
@@ -67,7 +68,6 @@ export class FormFiltersComponent {
           distinctUntilChanged(),
           switchMap(searchGenre => {
             const normalizedSearchGenre = (searchGenre || '').toLowerCase();
-            console.log(normalizedSearchGenre)
 
             // Envía el valor del filtro al servicio SearchService
             this.searchService.changeSearchGenre(normalizedSearchGenre);
@@ -76,6 +76,34 @@ export class FormFiltersComponent {
               map(response => this.extractGamesFromResponse(response)),
               map(gamesArray => gamesArray.filter(game =>
                 game.genre.toLowerCase().includes(normalizedSearchGenre)
+              ))
+            );
+          })
+        )
+        .subscribe(filteredGames => {
+          this.games = filteredGames;
+        });
+    }
+  }
+
+  searchPlatform(){
+    const searchPlatformControl = this.filtersForm.get('searchPlatform');
+
+    if (searchPlatformControl) {
+      searchPlatformControl.valueChanges
+        .pipe(
+          debounceTime(300),
+          distinctUntilChanged(),
+          switchMap(searchPlatform => {
+            const normalizedSearchPlatform = (searchPlatform || '').toLowerCase();
+
+            // Envía el valor del filtro al servicio SearchService
+            this.searchService.changeSearchPlatform(normalizedSearchPlatform);
+
+            return this.service.getFilterPlatform(normalizedSearchPlatform).pipe(
+              map(response => this.extractGamesFromResponse(response)),
+              map(gamesArray => gamesArray.filter(game =>
+                game.platform.toLowerCase().includes(normalizedSearchPlatform)
               ))
             );
           })

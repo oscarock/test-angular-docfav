@@ -53,6 +53,24 @@ export class ListGamesComponent {
         }
       });
     });
+
+    this.searchService.currentSearchPlatform.subscribe(searchPlatform => {
+      this.service.getFilterPlatform(searchPlatform)
+      .pipe(
+        map(response => this.extractGamesFromResponse(response))
+      )
+      .subscribe(response => {
+        this.games = response;
+        if (searchPlatform) {
+          this.games = response.filter(game =>
+            game.platform.toLowerCase().includes(searchPlatform)
+          );
+        } else {
+          // Si searchPlatform está vacío, muestra todos los juegos
+          this.games = response;
+        }
+      });
+    });
   }
 
   private extractGamesFromResponse(response: any): any[] {

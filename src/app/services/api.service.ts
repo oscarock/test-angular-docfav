@@ -20,4 +20,12 @@ export class ApiService {
       return this.httpClient.get(this.url);
     }
   }
+
+  getFilterPlatform(platform:string){
+    if(platform){
+      return this.httpClient.get(this.url + "?platform=" + platform);
+    }else{
+      return this.httpClient.get(this.url);
+    }
+  }
 }
