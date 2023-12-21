@@ -1,0 +1,32 @@
+<div class="container">
+    <form [formGroup]="filtersForm" class="row">
+        <div class="col-md-4">
+            <label for="search-game">Buscar por nombre</label>
+            <input type="text" class="form-control" id="search-game" placeholder="Buscar Juego" formControlName="searchName">
+        </div>
+        <div class="col-md-4">
+            <label for="search-genre">Buscar por genero</label>
+            <select name="search-genre" class="form-control" id="search-genre" formControlName="searchGenre">
+                <option value="">-- Seleccionar --</option>
+                <option value="mmorpg">mmorpg</option>
+                <option value="shooter">shooter</option>
+                <option value="strategy">strategy</option>
+                <option value="racing">racing</option>
+                <option value="sports">sports</option>
+                <option value="survival">survival</option>
+                <option value="space">space</option>
+                <option value="horror">horror</option>
+                <option value="zombie">zombie</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label for="search-genre">Buscar por plataforma</label>
+            <select name="search-genre" class="form-control" id="search-platform" formControlName="searchPlatform">
+                <option value="">-- Seleccionar --</option>
+                <option value="pc">pc</option>
+                <option value="browser">browser</option>
+                <option value="all">all</option>
+            </select>
+        </div>
+    </form>
+</div>

@@ -12,5 +12,4 @@ export class ApiService {
   getAllGames(){
     return this.httpClient.get(this.url);
   }
-
 }

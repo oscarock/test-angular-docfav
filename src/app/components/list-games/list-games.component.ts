@@ -1,27 +1,43 @@
 import { Component } from '@angular/core';
-//import { CallApiService } from '../../services/call-api.service';
 import { ApiService } from '../../services/api.service';
+import { FormFiltersComponent } from '../form-filters/form-filters.component';
+import { SearchService } from '../../services/search.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-list-games',
   standalone: true,
-  imports: [],
+  imports: [FormFiltersComponent],
   templateUrl: './list-games.component.html',
   styleUrl: './list-games.component.css'
 })
 export class ListGamesComponent {
   games: any;
 
-  constructor(private service: ApiService) {}
+  constructor(private service: ApiService, private searchService: SearchService) {}
 
   ngOnInit() {
-    // Llama al método del servicio para obtener la lista de juegos
-    /*this.callApiService.getAllGames().subscribe((data) => {
-      this.games = data;
-    });*/
     this.service.getAllGames()
+    .pipe(
+      map(response => this.extractGamesFromResponse(response))
+    )
     .subscribe(response => {
       this.games = response;
+      this.searchService.currentSearchName.subscribe(searchName => {
+        // Si searchName está presente, filtra los juegos
+        if (searchName) {
+          this.games = response.filter(game =>
+            game.title.toLowerCase().includes(searchName)
+          );
+        } else {
+          // Si searchName está vacío, muestra todos los juegos
+          this.games = response;
+        }
+      });
     });
+  }
+
+  private extractGamesFromResponse(response: any): any[] {
+    return response;
   }
 }
