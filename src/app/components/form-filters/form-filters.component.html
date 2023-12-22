@@ -1,11 +1,11 @@
 <div class="container">
     <form [formGroup]="filtersForm" class="row">
         <div class="col-md-4">
-            <label for="search-game">Buscar por nombre</label>
+            <label for="search-game"><b>Buscar por nombre</b></label>
             <input type="text" class="form-control" id="search-game" placeholder="Buscar Juego" formControlName="searchName">
         </div>
         <div class="col-md-4">
-            <label for="search-genre">Buscar por genero</label>
+            <label for="search-genre"><b>Buscar por genero</b></label>
             <select name="search-genre" class="form-control" id="search-genre" formControlName="searchGenre">
                 <option value="">-- Seleccionar --</option>
                 <option value="mmorpg">mmorpg</option>
@@ -20,12 +20,11 @@
             </select>
         </div>
         <div class="col-md-4">
-            <label for="search-genre">Buscar por plataforma</label>
+            <label for="search-genre"><b>Buscar por plataforma</b></label>
             <select name="search-genre" class="form-control" id="search-platform" formControlName="searchPlatform">
                 <option value="">-- Seleccionar --</option>
                 <option value="pc">pc</option>
                 <option value="browser">browser</option>
-                <option value="all">all</option>
             </select>
         </div>
     </form>
