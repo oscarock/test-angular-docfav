@@ -1,28 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ApiService } from '../../services/api.service';
 import { debounceTime, distinctUntilChanged, switchMap, map } from 'rxjs/operators';
+import { ApiService } from '../../services/api.service';
 import { SearchService } from '../../services/search.service';
-
 
 @Component({
   selector: 'app-form-filters',
   standalone: true,
-  imports: [ReactiveFormsModule, ],
+  imports: [ReactiveFormsModule],
   templateUrl: './form-filters.component.html',
   styleUrl: './form-filters.component.css'
 })
-export class FormFiltersComponent {
-  games:any;
 
-  constructor(private service: ApiService, private searchService: SearchService) {}
-
-  ngOnInit() {
-    this.setupSearchNameChange();
-    this.searchGenre()
-    this.searchPlatform()
-  }
+export class FormFiltersComponent implements OnInit {
+  games: any;
 
   filtersForm = new FormGroup({
     searchName: new FormControl(''),
@@ -30,83 +22,41 @@ export class FormFiltersComponent {
     searchPlatform: new FormControl(''),
   });
 
-  setupSearchNameChange() {
-    const searchNameControl = this.filtersForm.get('searchName');
+  constructor(private service: ApiService, private searchService: SearchService) {}
 
-    if (searchNameControl) {
-      searchNameControl.valueChanges
-        .pipe(
-          debounceTime(300),
-          distinctUntilChanged(),
-          switchMap(searchName => {
-            const normalizedSearchName = (searchName || '').toLowerCase();
-
-            // Envía el valor del filtro al servicio SearchService
-            this.searchService.changeSearchName(normalizedSearchName);
-
-            return this.service.getAllGames().pipe(
-              map(response => this.extractGamesFromResponse(response)),
-              map(gamesArray => gamesArray.filter(game =>
-                game.title.toLowerCase().includes(normalizedSearchName)
-              ))
-            );
-          })
-        )
-        .subscribe(filteredGames => {
-          this.games = filteredGames;
-        });
-    }
+  ngOnInit() {
+    this.setupSearchChange('searchName', 'title', this.searchService.changeSearchName.bind(this.searchService));
+    this.setupSearchChange('searchGenre', 'genre', this.searchService.changeSearchGenre.bind(this.searchService));
+    this.setupSearchChange('searchPlatform', 'platform', this.searchService.changeSearchPlatform.bind(this.searchService));
   }
 
-  searchGenre() {
-    const searchGenreControl = this.filtersForm.get('searchGenre');
+  setupSearchChange(controlName: string, apiParam: string, searchServiceCallback: (value: string) => void) {
+    const control = this.filtersForm.get(controlName);
 
-    if (searchGenreControl) {
-      searchGenreControl.valueChanges
+    if (control) {
+      control.valueChanges
         .pipe(
           debounceTime(300),
           distinctUntilChanged(),
-          switchMap(searchGenre => {
-            const normalizedSearchGenre = (searchGenre || '').toLowerCase();
+          switchMap(value => {
+            const normalizedValue = (value || '').toLowerCase();
 
             // Envía el valor del filtro al servicio SearchService
-            this.searchService.changeSearchGenre(normalizedSearchGenre);
+            searchServiceCallback(normalizedValue);
 
-            return this.service.getFilterGenre(normalizedSearchGenre).pipe(
-              map(response => this.extractGamesFromResponse(response)),
-              map(gamesArray => gamesArray.filter(game =>
-                game.genre.toLowerCase().includes(normalizedSearchGenre)
-              ))
-            );
-          })
-        )
-        .subscribe(filteredGames => {
-          this.games = filteredGames;
-        });
-    }
-  }
-
-  searchPlatform(){
-    const searchPlatformControl = this.filtersForm.get('searchPlatform');
-
-    if (searchPlatformControl) {
-      searchPlatformControl.valueChanges
-        .pipe(
-          debounceTime(300),
-          distinctUntilChanged(),
-          switchMap(searchPlatform => {
-            const normalizedSearchPlatform = (searchPlatform || '').toLowerCase();
-
-            // Envía el valor del filtro al servicio SearchService
-            this.searchService.changeSearchPlatform(normalizedSearchPlatform);
-
-            return this.service.getFilterPlatform(normalizedSearchPlatform).pipe(
-              map(response => this.extractGamesFromResponse(response)),
-              map(gamesArray => gamesArray.filter(game =>
-                game.platform.toLowerCase().includes(normalizedSearchPlatform)
-              ))
-            );
-          })
+            // Utiliza directamente el método correspondiente
+            switch (apiParam) {
+              case 'title':
+                return this.service.getAllGames();
+              case 'genre':
+                return this.service.getFilterGenre(normalizedValue);
+              case 'platform':
+                return this.service.getFilterPlatform(normalizedValue);
+              default:
+                return this.service.getAllGames();
+            }
+          }),
+          map(response => this.extractGamesFromResponse(response))
         )
         .subscribe(filteredGames => {
           this.games = filteredGames;
