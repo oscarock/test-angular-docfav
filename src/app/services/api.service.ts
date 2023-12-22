@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ApiService {
   private url = 'https://www.freetogame.com/api/games';
+  private urlDetails = 'https://www.freetogame.com/api/game'
 
   constructor(private httpClient: HttpClient) { }
 
@@ -27,5 +28,9 @@ export class ApiService {
     }else{
       return this.httpClient.get(this.url);
     }
+  }
+
+  getDetailsGame(id:string){
+    return this.httpClient.get(this.urlDetails + "?id=" + id);
   }
 }

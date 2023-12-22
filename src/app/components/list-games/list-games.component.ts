@@ -3,11 +3,12 @@ import { ApiService } from '../../services/api.service';
 import { FormFiltersComponent } from '../form-filters/form-filters.component';
 import { SearchService } from '../../services/search.service';
 import { map } from 'rxjs/operators';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-list-games',
   standalone: true,
-  imports: [FormFiltersComponent],
+  imports: [FormFiltersComponent, RouterModule],
   templateUrl: './list-games.component.html',
   styleUrl: './list-games.component.css'
 })

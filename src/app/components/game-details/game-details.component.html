@@ -1,0 +1,26 @@
+<div class="container">
+    <h1>{{ gameDetails.title }}</h1>
+    <img src="{{ gameDetails.thumbnail }}" class="img-thumbnail" alt="{{ gameDetails.thumbnail }}">
+    <p class="mt-2">{{ gameDetails.description }}</p>
+    <a href="{{ gameDetails.game_url }}" target="_blank">Ir a la pagina del juego</a><br>
+    <span class="badge text-bg-primary mt-2 me-2">Genero: {{ gameDetails.genre }}</span>
+    <span class="badge text-bg-secondary">Plataforma: {{ gameDetails.platform }}</span><br/>
+    @if(gameDetails.minimum_system_requirements.os){
+        <h3 class="mt-2">Requerimientos del sistema:</h3>
+        <ul>
+            <li><b>Sistema operativo: </b>{{ gameDetails.minimum_system_requirements.os }}</li>
+            <li><b>Procesador: </b>{{ gameDetails.minimum_system_requirements.processor }}</li>
+            <li><b>Memoria RAM: </b>{{ gameDetails.minimum_system_requirements.memory }}</li>
+            <li><b>Tarjetas graficas: </b>{{ gameDetails.minimum_system_requirements.graphics }}</li>
+            <li><b>Disco duro: </b>{{ gameDetails.minimum_system_requirements.storage }}</li>
+        </ul>
+    }
+    <div class="row mt-2">
+        @for (pictures of gameDetails.screenshots; track pictures.id){
+            <div class="col-md-4 mb-3">
+                <img src="{{ pictures.image }}" class="img-fluid rounded mx-auto d-block" alt="{{ pictures.image }}">
+            </div>
+        }
+    </div>
+    <a href="/games" class="btn btn-warning mb-2">Volver Atras</a>
+</div>

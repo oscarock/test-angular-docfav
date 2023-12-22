@@ -8,7 +8,7 @@
         <div class="card-body">
             <h5 class="card-title">{{ game.title }}</h5>
             <p class="card-text">{{ game.short_description }}</p>
-            <a href="#{{ game.id }}" class="btn btn-primary">Ver detalles</a>
+            <a routerLink="/game/{{game.id}}">Ver detallles</a>
         </div>
     </div>
 }
